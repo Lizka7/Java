@@ -18,10 +18,12 @@ public class CountController {
     private static final Logger logger = LoggerFactory.getLogger(CountController.class);
 
     private final CountCache cache;
+    private final Counter counter;
 
     @Autowired
-    public CountController(CountCache cache) {
+    public CountController(CountCache cache, Counter counter) {
         this.cache = cache;
+        this.counter = counter;
     }
 
     @GetMapping("/count")
@@ -29,6 +31,9 @@ public class CountController {
         try {
             char s = symbol.charAt(0);
             int count = 0;
+
+            // Increment counter
+            int requestCount = counter.increment();
 
             if (string.isEmpty()) {
                 logger.error("Input string is empty");
@@ -39,8 +44,8 @@ public class CountController {
             String cacheKey = string + symbol;
             Integer cachedCount = cache.get(cacheKey);
             if (cachedCount != null) {
-                CountResult cachedResult = new CountResult(string, symbol, cachedCount);
-                logger.info("Result retrieved from cache: string={}, symbol={}, result={}", string, symbol, cachedResult);
+                CountResult cachedResult = new CountResult(string, symbol, cachedCount, requestCount);
+                logger.info("Result retrieved from cache: string={}, symbol={}, result={}, count={}", string, symbol, cachedResult, requestCount);
                 return ResponseEntity.ok(cachedResult);
             }
 
@@ -49,9 +54,8 @@ public class CountController {
                     count++;
                 }
             }
-
-            CountResult result = new CountResult(string, symbol, count);
-            logger.info("Count request received: string={}, symbol={}, result={}", string, symbol, result);
+            CountResult result = new CountResult(string, symbol, count, requestCount);
+            logger.info("Count request received: string={}, symbol={}, result={}, count={}", string, symbol, result, requestCount);
 
             // Add result to cache
             cache.put(cacheKey, count);
@@ -69,9 +73,11 @@ public class CountController {
         }
     }
 
+
     @GetMapping("/cache")
     public Map<String, Integer> showCache() {
         return cache.getAll();
     }
 
 }
+
