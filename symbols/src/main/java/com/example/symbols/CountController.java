@@ -7,9 +7,14 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import java.util.Map;
 
@@ -73,11 +78,15 @@ public class CountController {
         }
     }
 
-
     @GetMapping("/cache")
     public Map<String, Integer> showCache() {
         return cache.getAll();
     }
 
+    @PostMapping("/bulk")
+    public List<CountResult> bulk(@RequestBody List<BulkParam> params) {
+        return params.stream()
+                .map(param -> count(param.getString(), param.getSymbol()).getBody())
+                .collect(Collectors.toList());
+    }
 }
-
