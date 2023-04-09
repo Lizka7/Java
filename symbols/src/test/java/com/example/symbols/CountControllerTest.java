@@ -11,6 +11,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+
+import org.springframework.web.server.ResponseStatusException;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class CountControllerTest {
@@ -29,5 +32,15 @@ public class CountControllerTest {
 
         String content = result.getResponse().getContentAsString();
         Assertions.assertTrue(content.contains("\"count\":2"));
+    }
+
+    @Test
+    public void testEmptyString() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/count")
+                        .param("string", "")
+                        .param("symbol", "o")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(result -> Assertions.assertTrue(result.getResolvedException() instanceof ResponseStatusException));
     }
 }

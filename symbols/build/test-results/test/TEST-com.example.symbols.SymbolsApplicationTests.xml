@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.example.symbols.SymbolsApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-03-30T12:00:05" hostname="HOME-PC" time="0.01">
+<testsuite name="com.example.symbols.SymbolsApplicationTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-04-09T16:21:01" hostname="HOME-PC" time="0.007">
   <properties/>
-  <testcase name="contextLoads()" classname="com.example.symbols.SymbolsApplicationTests" time="0.01"/>
-  <system-out><![CDATA[2023-03-30T15:00:04.488+03:00  INFO 4892 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.symbols.SymbolsApplicationTests]: SymbolsApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
-2023-03-30T15:00:04.504+03:00  INFO 4892 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.symbols.SymbolsApplication for test class com.example.symbols.SymbolsApplicationTests
+  <testcase name="contextLoads()" classname="com.example.symbols.SymbolsApplicationTests" time="0.007"/>
+  <system-out><![CDATA[2023-04-09T19:21:00.993+03:00  INFO 8392 --- [    Test worker] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.example.symbols.SymbolsApplicationTests]: SymbolsApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2023-04-09T19:21:00.999+03:00  INFO 8392 --- [    Test worker] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.example.symbols.SymbolsApplication for test class com.example.symbols.SymbolsApplicationTests
 
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
@@ -13,9 +13,9 @@
  =========|_|==============|___/=/_/_/_/
  :: Spring Boot ::                (v3.0.4)
 
-2023-03-30T15:00:04.639+03:00  INFO 4892 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : Starting SymbolsApplicationTests using Java 19.0.2 with PID 4892 (started by Елизавета in C:\Users\Елизавета\Desktop\symbols)
-2023-03-30T15:00:04.640+03:00  INFO 4892 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : No active profile set, falling back to 1 default profile: "default"
-2023-03-30T15:00:05.398+03:00  INFO 4892 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : Started SymbolsApplicationTests in 0.861 seconds (process running for 13.472)
+2023-04-09T19:21:01.057+03:00  INFO 8392 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : Starting SymbolsApplicationTests using Java 19.0.2 with PID 8392 (started by Елизавета in C:\Users\Елизавета\Desktop\symbols)
+2023-04-09T19:21:01.057+03:00  INFO 8392 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : No active profile set, falling back to 1 default profile: "default"
+2023-04-09T19:21:01.436+03:00  INFO 8392 --- [    Test worker] c.e.symbols.SymbolsApplicationTests      : Started SymbolsApplicationTests in 0.422 seconds (process running for 6.519)
 ]]></system-out>
   <system-err><![CDATA[]]></system-err>
 </testsuite>
