@@ -84,9 +84,17 @@ public class CountController {
     }
 
     @PostMapping("/bulk")
-    public List<CountResult> bulk(@RequestBody List<BulkParam> params) {
-        return params.stream()
+    public BulkCountResult bulk(@RequestBody List<BulkParam> params) {
+        List<CountResult> results = params.stream()
                 .map(param -> count(param.getString(), param.getSymbol()).getBody())
                 .collect(Collectors.toList());
+
+        int requestCount = results.size();
+        int totalCount = results.stream().mapToInt(CountResult::getCount).sum();
+        double avgCount = results.stream().mapToDouble(CountResult::getCount).average().orElse(0);
+        int maxCount = results.stream().mapToInt(CountResult::getCount).max().orElse(0);
+        int minCount = results.stream().mapToInt(CountResult::getCount).min().orElse(0);
+
+        return new BulkCountResult(results, requestCount, totalCount, avgCount, maxCount, minCount);
     }
 }
