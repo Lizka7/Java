@@ -2,18 +2,20 @@ package com.example.symbols.controller;
 
 import com.example.symbols.cache.CountCache;
 import com.example.symbols.dto.CountResult;
+import com.example.symbols.dto.CountResultEntity;
+import com.example.symbols.repository.CountResultRepository;
 import com.example.symbols.service.CountService;
 import com.example.symbols.util.Counter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -24,12 +26,14 @@ public class CountController {
     private final CountCache cache;
     private final CountService service;
     private final Counter counter;
+    private final CountResultRepository repository;
 
     @Autowired
-    public CountController(CountCache cache, CountService service, Counter counter) {
+    public CountController(CountCache cache, CountService service, Counter counter, CountResultRepository repository) {
         this.cache = cache;
         this.service = service;
         this.counter = counter;
+        this.repository = repository;
     }
 
     @GetMapping("/count")
@@ -43,6 +47,11 @@ public class CountController {
             if (string.isEmpty()) {
                 logger.error("Input string is empty");
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Input string is empty");
+            }
+
+            if (symbol.length() != 1) {
+                logger.error("Symbol should be exactly one character long");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Symbol should be exactly one character long");
             }
 
             // Check if result is in cache
@@ -63,13 +72,15 @@ public class CountController {
             // Add result to cache
             cache.put(cacheKey, count);
 
+            // Save result to database using Hibernate
+            CountResultEntity entity = new CountResultEntity();
+            entity.setInputString(string);
+            entity.setSymbol(s);
+            entity.setCount(count);
+            entity.setRequestCount(requestCount);
+            repository.saveAndFlush(entity);
+
             return ResponseEntity.ok(result);
-        } catch (MethodArgumentTypeMismatchException e) {
-            logger.error("Parameter validation error: {}", e.getMessage());
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-        } catch (ResponseStatusException e) {
-            logger.error("Client error: {}", e.getMessage());
-            throw e;
         } catch (Exception e) {
             logger.error("Internal server error", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
