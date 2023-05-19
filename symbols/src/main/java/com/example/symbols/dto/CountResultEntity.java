@@ -2,7 +2,6 @@ package com.example.symbols.dto;
 
 import javax.persistence.*;
 
-
 @Entity
 @Table(name = "count_result")
 public class CountResultEntity {
@@ -13,23 +12,22 @@ public class CountResultEntity {
     private Long id;
 
     @Column(name = "string")
-    private String inputString;
+    private String string;
 
     @Column(name = "symbol")
-    private char symbol;
+    private String symbol;
 
     @Column(name = "count")
     private int count;
 
     @Column(name = "request_count")
-    @Transient
     private int requestCount;
 
     public CountResultEntity() {
     }
 
-    public CountResultEntity(String inputString, char symbol, int count, int requestCount) {
-        this.inputString = inputString;
+    public CountResultEntity(String string, String symbol, int count, int requestCount) {
+        this.string = string;
         this.symbol = symbol;
         this.count = count;
         this.requestCount = requestCount;
@@ -44,18 +42,18 @@ public class CountResultEntity {
     }
 
     public String getInputString() {
-        return inputString;
+        return string;
     }
 
     public void setInputString(String inputString) {
-        this.inputString = inputString;
+        this.string = inputString;
     }
 
-    public char getSymbol() {
+    public String getSymbol() {
         return symbol;
     }
 
-    public void setSymbol(char symbol) {
+    public void setSymbol(String symbol) {
         this.symbol = symbol;
     }
 
@@ -75,4 +73,3 @@ public class CountResultEntity {
         this.requestCount = requestCount;
     }
 }
-

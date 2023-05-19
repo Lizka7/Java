@@ -6,6 +6,7 @@ public class CountResult {
     private int count;
     private int requestCount;
 
+
     public CountResult(String string, String symbol, int count, int requestCount) {
         this.string = string;
         this.symbol = symbol;

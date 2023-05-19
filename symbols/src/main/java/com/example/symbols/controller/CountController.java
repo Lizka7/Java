@@ -12,12 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+
 
 @RestController
 public class CountController {
@@ -63,28 +66,38 @@ public class CountController {
                 return ResponseEntity.ok(cachedResult);
             }
 
-            // Calculate count
-            int count = service.count(string, s);
+            // Calculate count asynchronously
+            CompletableFuture<Integer> countFuture = calculateCountAsync(string, s);
 
-            CountResult result = new CountResult(string, symbol, count, requestCount);
+            // Save result to database using Hibernate
+            countFuture.thenAcceptAsync(count -> {
+                CountResultEntity entity = new CountResultEntity();
+                entity.setInputString(string);
+                entity.setSymbol(symbol);
+                entity.setCount(count);
+                entity.setRequestCount(requestCount);
+                repository.saveAndFlush(entity);
+            });
+
+            CountResult result = new CountResult(string, symbol, 0, requestCount);
             logger.info("Count request received: string={}, symbol={}, result={}, count={}", string, symbol, result, requestCount);
 
             // Add result to cache
-            cache.put(cacheKey, count);
-
-            // Save result to database using Hibernate
-            CountResultEntity entity = new CountResultEntity();
-            entity.setInputString(string);
-            entity.setSymbol(s);
-            entity.setCount(count);
-            entity.setRequestCount(requestCount);
-            repository.saveAndFlush(entity);
+            cache.put(cacheKey, 0);
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             logger.error("Internal server error", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e);
         }
+    }
+
+    @Async
+    public CompletableFuture<Integer> calculateCountAsync(String string, char symbol) {
+        int count = service.count(string, symbol);
+        String cacheKey = string + symbol;
+        cache.put(cacheKey, count);
+        return CompletableFuture.completedFuture(count);
     }
 
     @GetMapping("/count/requests")
