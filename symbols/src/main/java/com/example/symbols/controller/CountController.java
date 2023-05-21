@@ -58,8 +58,8 @@ public class CountController {
             }
 
             // Check if result is in cache
-            String cacheKey = string + symbol;
-            Integer cachedCount = cache.get(cacheKey);
+            //String cacheKey = string + symbol;
+            Integer cachedCount = cache.get(symbol);
             if (cachedCount != null) {
                 CountResult cachedResult = new CountResult(string, symbol, cachedCount, requestCount);
                 logger.info("Result retrieved from cache: string={}, symbol={}, result={}, count={}", string, symbol, cachedResult, requestCount);
@@ -83,7 +83,7 @@ public class CountController {
             logger.info("Count request received: string={}, symbol={}, result={}, count={}", string, symbol, result, requestCount);
 
             // Add result to cache
-            cache.put(cacheKey, 0);
+            cache.put(symbol, 0);
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
