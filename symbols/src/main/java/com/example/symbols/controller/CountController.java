@@ -83,7 +83,7 @@ public class CountController {
             logger.info("Count request received: string={}, symbol={}, result={}, count={}", string, symbol, result, requestCount);
 
             // Add result to cache
-            cache.put(symbol, 0);
+            cache.put(symbol, result.getCount());
 
             return ResponseEntity.ok(result);
         } catch (Exception e) {
@@ -95,10 +95,10 @@ public class CountController {
     @Async
     public CompletableFuture<Integer> calculateCountAsync(String string, char symbol) {
         int count = service.count(string, symbol);
-        String cacheKey = string + symbol;
-        cache.put(cacheKey, count);
+        cache.put(String.valueOf(symbol), count);
         return CompletableFuture.completedFuture(count);
     }
+
 
     @GetMapping("/count/requests")
     public ResponseEntity<Integer> getCount() {
